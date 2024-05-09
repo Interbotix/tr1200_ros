@@ -1,0 +1,7 @@
+<library path="tr1200_base">
+  <class name="tr1200_base/TR1200Interface"
+         type="tr1200_base::TR1200Interface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>The tr1200_base TR1200 using a system hardware interface-type.</description>
+  </class>
+</library>

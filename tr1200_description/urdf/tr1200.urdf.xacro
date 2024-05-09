@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot name="tr1200" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find tr1200_description)/urdf/tr1200_base.urdf.xacro"/>
+  <xacro:include filename="$(find tr1200_description)/urdf/tr1200.ros2_control.xacro"/>
+
+  <xacro:tr1200_base/>
+  <xacro:tr1200_ros2_control name="tr1200"/>
+
+</robot>

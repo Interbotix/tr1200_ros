@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+  <xacro:macro name="ros2_control_wheel" params="name">
+    <joint name="${name}">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="tr1200_ros2_control" params="name">
+
+    <xacro:property name="left_wheel_joint" value="left_wheel_joint"/>
+    <xacro:property name="right_wheel_joint" value="right_wheel_joint"/>
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <plugin>tr1200_base/TR1200Interface</plugin>
+        <param name="port_name">can0</param>
+        <param name="joint_name_left_wheel">${left_wheel_joint}</param>
+        <param name="joint_name_right_wheel">${right_wheel_joint}</param>
+      </hardware>
+      <xacro:ros2_control_wheel name="${left_wheel_joint}"/>
+      <xacro:ros2_control_wheel name="${right_wheel_joint}"/>
+    </ros2_control>
+
+  </xacro:macro>
+
+</robot>

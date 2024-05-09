@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.1415926535897931"/>
+
+  <xacro:macro name="wheel" params="name *origin">
+
+    <joint name="${name}_joint" type="continuous">
+      <axis xyz="0 1 0"/>
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <xacro:insert_block name="origin"/>
+      <limit
+        effort="100"
+        velocity="6.1728"/>
+      <dynamics
+        damping="0.7"
+        friction="0.8"/>
+    </joint>
+
+    <link name="${name}"/>
+
+  </xacro:macro>
+
+</robot>

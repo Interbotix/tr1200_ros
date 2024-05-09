@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.1415926535897931"/>
+  <xacro:property name="baselink_to_wheel_x" value="-0.6"/>
+  <xacro:property name="baselink_to_wheel_y" value="0.296993"/>
+  <xacro:property name="baselink_to_wheel_z" value="-0.45"/>
+  <xacro:property name="wheel_radius" value="0.162"/>
+
+  <xacro:macro name="tr1200_base">
+
+    <!-- Import wheel macro -->
+    <xacro:include filename="$(find tr1200_description)/urdf/wheel.urdf.xacro"/>
+
+    <link name="base_footprint" type="fixed"/>
+
+    <joint name="base_footprint_joint" type="fixed">
+      <origin xyz="0 0 0.493" rpy="0 0 0"/>
+      <parent link="base_footprint"/>
+      <child link="base_link"/>
+    </joint>
+
+    <link name="base_link"/>
+
+    <xacro:wheel name="left_wheel">
+      <origin
+        rpy="0 0 0"
+        xyz="${baselink_to_wheel_x} ${baselink_to_wheel_y} ${baselink_to_wheel_z}"/>
+    </xacro:wheel>
+
+    <xacro:wheel name="right_wheel">
+      <origin
+        rpy="0 0 0"
+        xyz="${baselink_to_wheel_x} -${baselink_to_wheel_y} ${baselink_to_wheel_z}"/>
+    </xacro:wheel>
+
+  </xacro:macro>
+
+</robot>
