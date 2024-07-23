@@ -11,7 +11,16 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-link_directories(lib)
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+  set(ARCH "x86_64")
+elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+  set(ARCH "aarch64")
+else()
+  message(FATAL_ERROR "Unknown System Architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
+link_directories(lib/${ARCH})
+
 include_directories(include)
 
 set(ROS_DEPENDENCIES
@@ -30,7 +39,7 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/lib/libtr1200_driver.so
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/${ARCH}/libtr1200_driver.so
 )
 
 pluginlib_export_plugin_description_file(hardware_interface ${PROJECT_NAME}.xml)
@@ -52,7 +61,7 @@ install(
 
 install(
   FILES
-    lib/libtr1200_driver.so
+    lib/${ARCH}/libtr1200_driver.so
   DESTINATION
     lib/${PACKAGE_NAME}
 )
