@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
   pull_request:
     branches:
       - main
-    paths-ignore:
   workflow_dispatch:
 
 # Limit jobs run by PRs or branches by cancelling ongoing jobs
