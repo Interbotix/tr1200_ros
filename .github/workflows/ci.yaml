@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Limit jobs run by PRs or branches by cancelling ongoing jobs
+# https://docs.github.com/en/actions/using-jobs/using-concurrency#example-using-concurrency-and-the-default-behavior
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - ROS_DISTRO: humble
+            IMAGE: ubuntu:jammy
+          - ROS_DISTRO: iron
+            IMAGE: ubuntu:jammy
+          - ROS_DISTRO: jazzy
+            IMAGE: ubuntu:noble
+          - ROS_DISTRO: rolling
+            IMAGE: ubuntu:noble
+
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.env.IMAGE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ros-tooling/setup-ros@v0.7
+        with:
+          use-ros2-testing: true
+          required-ros-distributions: ${{ matrix.env.ROS_DISTRO }}
+      - uses: ros-tooling/action-ros-ci@v0.3
+        with:
+          target-ros2-distro: ${{ matrix.env.ROS_DISTRO }}
