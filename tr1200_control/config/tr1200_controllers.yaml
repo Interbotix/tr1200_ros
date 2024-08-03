@@ -78,7 +78,7 @@ tr1200_controller:
     ### Calibration Parameters
 
     # Shortest distance between the left and right wheels.
-    wheel_separation: 0.574
+    wheel_separation: 0.424
 
     # Correction factor for wheel separation.
     wheel_separation_multiplier: 1.0
