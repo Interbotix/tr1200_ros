@@ -60,13 +60,14 @@ CallbackReturn TR1200Interface::on_init(const hardware_interface::HardwareInfo &
     port_name_.c_str());
 
   try {
-    publish_battery_state_nans_ = info_.hardware_parameters.at("publish_battery_state_nans") == "true";
+    publish_battery_state_nans_ =
+      info_.hardware_parameters.at("publish_battery_state_nans") == "true";
   } catch (const std::out_of_range & /* e */) {
     RCLCPP_DEBUG(
       node_->get_logger(),
       "Could not find publish_battery_state_nans in hardware parameters, setting to default of "
-      "'false'.");
-    publish_battery_state_nans_ = false;
+      "'true'.");
+    publish_battery_state_nans_ = true;
   }
 
   // get joint names from parameters

@@ -120,7 +120,7 @@ protected:
   rclcpp::Publisher<BatteryState>::SharedPtr pub_battery_state_;
 
   // True to publish unmeasured battery state values as NaNs, false to publish -1s
-  bool publish_battery_state_nans_{false};
+  bool publish_battery_state_nans_{true};
 };
 
 }  // namespace tr1200_base
