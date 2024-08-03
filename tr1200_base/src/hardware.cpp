@@ -59,6 +59,17 @@ CallbackReturn TR1200Interface::on_init(const hardware_interface::HardwareInfo &
     "Will connect to port '%s' on activation.",
     port_name_.c_str());
 
+  try {
+    publish_battery_state_nans_ =
+      info_.hardware_parameters.at("publish_battery_state_nans") == "true";
+  } catch (const std::out_of_range & /* e */) {
+    RCLCPP_DEBUG(
+      node_->get_logger(),
+      "Could not find publish_battery_state_nans in hardware parameters, setting to default of "
+      "'true'.");
+    publish_battery_state_nans_ = true;
+  }
+
   // get joint names from parameters
   try {
     joint_name_left_wheel_ = info_.hardware_parameters.at("joint_name_left_wheel");
@@ -256,13 +267,30 @@ return_type TR1200Interface::read(
   // Read and publish battery state
   auto battery_state = BatteryState();
   battery_state.header.stamp = node_->now();
+  battery_state.power_supply_technology = BatteryState::POWER_SUPPLY_TECHNOLOGY_LIFE;
+  battery_state.power_supply_status = BatteryState::POWER_SUPPLY_STATUS_UNKNOWN;
+  battery_state.power_supply_health = BatteryState::POWER_SUPPLY_HEALTH_UNKNOWN;
+
   battery_state.voltage = driver_->get_battery_voltage();
-  battery_state.current = driver_->get_battery_current();
-  battery_state.charge = std::numeric_limits<float>::quiet_NaN();
-  battery_state.capacity = std::numeric_limits<float>::quiet_NaN();
-  battery_state.design_capacity = std::numeric_limits<float>::quiet_NaN();
   battery_state.percentage = driver_->get_battery_soc();
   battery_state.present = true;
+  // TODO(lukeschmitt-tr): Reenable this once current has been verified
+  // battery_state.current = driver_->get_battery_current();
+
+  if (publish_battery_state_nans_) {
+    battery_state.charge = std::numeric_limits<float>::quiet_NaN();
+    battery_state.capacity = std::numeric_limits<float>::quiet_NaN();
+    battery_state.design_capacity = std::numeric_limits<float>::quiet_NaN();
+    battery_state.temperature = std::numeric_limits<float>::quiet_NaN();
+    battery_state.current = std::numeric_limits<float>::quiet_NaN();
+  } else {
+    battery_state.charge = -1.0;
+    battery_state.capacity = -1.0;
+    battery_state.design_capacity = -1.0;
+    battery_state.temperature = -1.0;
+    battery_state.current = -1.0;
+  }
+
   pub_battery_state_->publish(battery_state);
 
   return return_type::OK;

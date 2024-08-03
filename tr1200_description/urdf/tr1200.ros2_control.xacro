@@ -19,6 +19,7 @@
       <hardware>
         <plugin>tr1200_base/TR1200Interface</plugin>
         <param name="port_name">can0</param>
+        <param name="publish_battery_state_nans">false</param>
         <param name="joint_name_left_wheel">${left_wheel_joint}</param>
         <param name="joint_name_right_wheel">${right_wheel_joint}</param>
       </hardware>
