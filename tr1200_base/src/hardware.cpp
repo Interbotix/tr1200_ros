@@ -272,10 +272,11 @@ return_type TR1200Interface::read(
   battery_state.power_supply_health = BatteryState::POWER_SUPPLY_HEALTH_UNKNOWN;
 
   battery_state.voltage = driver_->get_battery_voltage();
-  battery_state.percentage = driver_->get_battery_soc();
+  battery_state.percentage = driver_->get_battery_soc() / 100.0f;
   battery_state.present = true;
-  // TODO(lukeschmitt-tr): Reenable this once current has been verified
+  // TODO(lukeschmitt-tr): Reenable this once current, temp has been verified
   // battery_state.current = driver_->get_battery_current();
+  // battery_state.temperature = driver_->get_battery_temperature();
 
   if (publish_battery_state_nans_) {
     battery_state.charge = std::numeric_limits<float>::quiet_NaN();
