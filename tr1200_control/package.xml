@@ -11,7 +11,7 @@
 
   <depend>controller_manager</depend>
   <depend>diff_drive_controller</depend>
-  <depend>joint_state_publisher</depend>
+  <depend>joint_state_broadcaster</depend>
   <depend>launch_ros</depend>
   <depend>launch</depend>
   <depend>tr1200_base</depend>
