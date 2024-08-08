@@ -37,21 +37,21 @@ tr1200_controller:
 
     # Odometry covariance for the encoder output of the robot for the pose.
     pose_covariance_diagonal:
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.05
 
     # Odometry covariance for the encoder output of the robot for the speed.
     twist_covariance_diagonal:
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
-    - 0.001
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.005
+    - 0.05
 
     ### Time Related Parameters
 
@@ -66,7 +66,7 @@ tr1200_controller:
 
     # Base frame_id, which is used to fill in the child_frame_id of the Odometry messages and TF.
     # (default: base_link)
-    base_frame_id: base_link
+    base_frame_id: base_footprint
 
     # Name of the frame for odometry. This frame is parent of ``base_frame_id`` when controller
     # publishes odometry.
@@ -81,7 +81,7 @@ tr1200_controller:
     wheel_separation: 0.424
 
     # Correction factor for wheel separation.
-    wheel_separation_multiplier: 1.0
+    wheel_separation_multiplier: 1.8
 
     # Radius of a wheel, i.e., wheels size, used for transformation of linear velocity into wheel
     # rotations. If this parameter is wrong the robot will move faster or slower then expected.
@@ -89,11 +89,11 @@ tr1200_controller:
 
     # Correction factor when radius of left wheels differs from the nominal value in
     # ``wheel_radius`` parameter.
-    left_wheel_radius_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.1
 
     # Correction factor when radius of right wheels differs from the nominal value in
     # ``wheel_radius`` parameter.
-    right_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.1
 
     ### Control Parameters
 
