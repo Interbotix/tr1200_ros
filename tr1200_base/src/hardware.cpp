@@ -149,7 +149,7 @@ std::vector<hardware_interface::StateInterface> TR1200Interface::export_state_in
       hardware_interface::StateInterface(
         info_.joints.at(i).name,
         hardware_interface::HW_IF_POSITION,
-        &velocities_.at(i)));
+        &positions_.at(i)));
   }
   return state_interfaces;
 }

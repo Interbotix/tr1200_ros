@@ -1,0 +1,12 @@
+<class_libraries>
+  <library path="tr1200_controllers">
+    <class
+      name="tr1200_controllers/TR1200RCStateBroadcaster"
+      type="tr1200_controllers::TR1200RCStateBroadcaster"
+      base_class_type="controller_interface::ControllerInterface">
+    <description>
+      This controller publishes the state of the TR1200's handheld RC as tr1200_msgs/RcStateStamped message.
+    </description>
+    </class>
+  </library>
+</class_libraries>
