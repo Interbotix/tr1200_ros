@@ -44,9 +44,9 @@
 #include <thread>
 #include <vector>
 
-#include "tr1200_driver/can.hpp"
-#include "tr1200_driver/driver_version.hpp"
-#include "tr1200_driver/logging.hpp"
+#include "tr1200_base/can.hpp"
+#include "tr1200_base/driver_version.hpp"
+#include "tr1200_base/logging.hpp"
 
 namespace tr1200_driver
 {
