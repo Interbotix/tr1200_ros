@@ -44,9 +44,9 @@
 #include <thread>
 #include <vector>
 
-#include "tr1200_base/can.hpp"
-#include "tr1200_base/driver_version.hpp"
-#include "tr1200_base/logging.hpp"
+#include "tr1200_driver/can.hpp"
+#include "tr1200_driver/driver_version.hpp"
+#include "tr1200_driver/logging.hpp"
 
 namespace tr1200_driver
 {
@@ -58,8 +58,11 @@ const int CAN_ID_FB_MOTOR_STATE = 0x200;
 // Battery management system feedback message ID
 const int CAN_ID_FB_BMS_STATE = 0x281;
 
-// Remote control transmitter state feedback message ID
-const int CAN_ID_FB_RC_STATE = 0x341;
+// FlySky remote control transmitter state feedback message ID
+const int CAN_ID_FB_FS_RC_STATE = 0x341;
+
+// Kar-Tech remote control transmitter state feedback message ID
+const int CAN_ID_FB_KT_RC_STATE = 0x351;
 
 // Fault status feedback message ID
 const int CAN_ID_FB_FAULT_STATUS = 0x151;
@@ -189,7 +192,19 @@ public:
     int8_t & swc,
     int8_t & swd);
 
-private:
+  /**
+   * @brief Get the state of the RC buttons
+   * @param buttons[out] The state of the buttons
+   */
+  void get_rc_button_states(int8_t & buttons);
+
+  /**
+   * @brief Get the RC type
+   * @param rc_type[out] The RC type
+   */
+  void get_rc_type(std::string & rc_type);
+
+protected:
   std::mutex mutex_cmd_;
   std::mutex mutex_bms_;
   std::mutex mutex_motor_fb_;
@@ -206,6 +221,7 @@ private:
 
   RcState rc_state_;
   FaultStatus fault_status_;
+  std::string rc_type_{"UNKNOWN"};
   std::array<ControlMotorSpeed, 2> control_motor_speed_;
   std::array<FeedbackMotorState, 2> feedback_motor_state_;
   BmsState bms_state_;

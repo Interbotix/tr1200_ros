@@ -81,6 +81,9 @@ struct RcState
 
   // VRA knob
   int8_t knob_vra;
+
+  // Buttons
+  int8_t buttons;
 };
 
 typedef struct ControlMotorSpeed ControlMotorSpeed;

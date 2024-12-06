@@ -66,7 +66,7 @@ enum Level
 };
 
 // The logging level - anything higher than this level will be logged
-static Level _level = Level::INFO;
+[[maybe_unused]] static Level _level = Level::INFO;
 
 /**
  * @brief Log a message
