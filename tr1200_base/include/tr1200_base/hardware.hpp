@@ -116,6 +116,10 @@ protected:
   // Wheel velocity commands [rad]
   std::vector<double> commands_;
 
+  std::vector<double> rc_state_values_;
+
+  std::vector<double> battery_state_values_;
+
   // Battery state publisher
   rclcpp::Publisher<BatteryState>::SharedPtr pub_battery_state_;
 

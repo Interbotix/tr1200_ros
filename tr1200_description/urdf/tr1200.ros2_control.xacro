@@ -25,6 +25,21 @@
       </hardware>
       <xacro:ros2_control_wheel name="${left_wheel_joint}"/>
       <xacro:ros2_control_wheel name="${right_wheel_joint}"/>
+      <sensor name="rc_state">
+        <state_interface name="stick_left_x"/>
+        <state_interface name="stick_left_y"/>
+        <state_interface name="stick_right_x"/>
+        <state_interface name="stick_right_y"/>
+        <state_interface name="switch_swa"/>
+        <state_interface name="switch_swb"/>
+        <state_interface name="switch_swc"/>
+        <state_interface name="switch_swd"/>
+        <state_interface name="buttons"/>
+      </sensor>
+      <sensor name="battery">
+        <state_interface name="voltage"/>
+        <state_interface name="soc"/>
+      </sensor>
     </ros2_control>
 
   </xacro:macro>

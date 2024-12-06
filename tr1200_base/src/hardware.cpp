@@ -85,6 +85,12 @@ CallbackReturn TR1200Interface::on_init(const hardware_interface::HardwareInfo &
   velocities_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
   commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
 
+  // Assume that the remote controller will have 9 state interfaces
+  rc_state_values_.resize(9, std::numeric_limits<double>::quiet_NaN());
+
+  // Assume that the battery state will have 2 state interfaces
+  battery_state_values_.resize(2, std::numeric_limits<double>::quiet_NaN());
+
   for (const auto & joint : info_.joints) {
     // only one command interface is expected for each joint
     if (joint.command_interfaces.size() != 1) {
@@ -139,6 +145,7 @@ CallbackReturn TR1200Interface::on_init(const hardware_interface::HardwareInfo &
 std::vector<hardware_interface::StateInterface> TR1200Interface::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
+  // Export wheel state interfaces
   for (size_t i = 0; i < info_.joints.size(); ++i) {
     state_interfaces.emplace_back(
       hardware_interface::StateInterface(
@@ -151,6 +158,68 @@ std::vector<hardware_interface::StateInterface> TR1200Interface::export_state_in
         hardware_interface::HW_IF_POSITION,
         &positions_.at(i)));
   }
+
+  // Export sensor state interfaces
+
+  // Export RC state interfaces
+  if (info_.sensors.size() < 1) {
+    RCLCPP_WARN(
+      node_->get_logger(),
+      "No sensor state interfaces are available.");
+    return state_interfaces;
+  } else {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "Found %zu sensor state interfaces. Assuming first state interface is RC State.",
+      info_.sensors.size());
+  }
+
+  // Assume that the first sensor is the remote controller
+  auto rc_sensor = info_.sensors.at(0);
+  RCLCPP_INFO(
+    node_->get_logger(),
+    "Configuring RC sensor '%s' with %zu state interfaces",
+    rc_sensor.name.c_str(), rc_sensor.state_interfaces.size());
+  for (size_t i = 0; i < rc_sensor.state_interfaces.size(); ++i) {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "Adding state interface '%s' to sensor '%s'",
+      rc_sensor.state_interfaces.at(i).name.c_str(),
+      rc_sensor.name.c_str());
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        rc_sensor.name,
+        rc_sensor.state_interfaces.at(i).name,
+        &rc_state_values_.at(i)));
+  }
+
+  if (info_.sensors.size() < 2) {
+    RCLCPP_WARN(
+      node_->get_logger(),
+      "Fewer than 2 state interfaces are available. "
+      "Assuming battery state interfaces are not available.");
+    return state_interfaces;
+  } else {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "Assuming second state interface is Battery State.");
+  }
+
+  // Assume that the second sensor is the battery
+  auto battery_sensor = info_.sensors.at(1);
+  for (size_t i = 0; i < battery_sensor.state_interfaces.size(); ++i) {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "Adding state interface '%s' to '%s'",
+      battery_sensor.state_interfaces.at(i).name.c_str(),
+      battery_sensor.name.c_str());
+    state_interfaces.emplace_back(
+      hardware_interface::StateInterface(
+        battery_sensor.name,
+        battery_sensor.state_interfaces.at(i).name,
+        &battery_state_values_.at(i)));
+  }
+
   return state_interfaces;
 }
 
@@ -263,6 +332,32 @@ return_type TR1200Interface::read(
   driver_->get_motor_positions(
     positions_.at(0),
     positions_.at(1));
+
+  // Workaround to get RC state values as doubles from the driver
+  auto rc_state_values_i = std::vector<int8_t>();
+  rc_state_values_i.resize(9);
+
+  driver_->get_rc_stick_states(
+    rc_state_values_i[0],
+    rc_state_values_i[1],
+    rc_state_values_i[2],
+    rc_state_values_i[3]);
+
+  driver_->get_rc_switch_states(
+    rc_state_values_i[4],
+    rc_state_values_i[5],
+    rc_state_values_i[6],
+    rc_state_values_i[7]);
+
+  driver_->get_rc_button_states(rc_state_values_i[8]);
+
+  // Copy the RC values as integers to the state values vector as doubles
+  for (size_t i = 0; i < rc_state_values_.size(); ++i) {
+    rc_state_values_.at(i) = static_cast<double>(rc_state_values_i.at(i));
+  }
+
+  battery_state_values_.at(0) = driver_->get_battery_voltage();
+  battery_state_values_.at(1) = driver_->get_battery_soc();
 
   // Read and publish battery state
   auto battery_state = BatteryState();
